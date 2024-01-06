@@ -1,8 +1,8 @@
 import AddProjectButton from "./AddProjectButton";
 
-export default function Sidebar({ projects }) {
+export default function Sidebar({ projects, addProjectClick}) {
   return (
-    <div className="bg-gray-800 text-white p-4 w-64 min-h-screen">
+    <div className="bg-gray-800 text-white p-4 w-1/5 min-h-screen">
       <h1 className="text-xl font-bold mb-4">Your Projects</h1>
 
       {projects.length > 0 ? (
@@ -18,7 +18,7 @@ export default function Sidebar({ projects }) {
         <p>No projects</p>
       )}
 
-      <AddProjectButton />
+      <AddProjectButton addProject={addProjectClick} />
     </div>
   );
 }
