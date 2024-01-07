@@ -22,20 +22,42 @@ function App() {
   ];
 
   const [projectsArr, setProjectsArr] = useState(defProjectsCollection);
-  const [mainPartState, setMainPartState] = useState("no project");
+  const [mainPartState, setMainPartState] = useState(-1);
 
   function handleNewProject() {
-    setMainPartState("new project");
-  }
-
-  function handleAddProject(newProject) {
-    setProjectsArr((prevProjectsArr) => [...prevProjectsArr, newProject]);
-    setMainPartState("no project");
+    setMainPartState(1);
   }
 
   function handleLoadProject(project) {
     setMainPartState(project.projectId);
   }
+
+  function handleUpdateExistingProject(existingProject) {
+    setProjectsArr((prevProjectsArr) => {
+      const index = prevProjectsArr.findIndex(
+        (project) => project.projectId === existingProject.projectId
+      );
+  
+      if (index !== -1) {
+        // Update existing project
+        prevProjectsArr[index] = existingProject;
+      } else {
+        // Handle case where the project is not found
+        console.error("Project not found for updating.");
+      }
+  
+      return [...prevProjectsArr];
+    });
+  
+    setMainPartState(-1);
+  }
+  
+  function handleSaveNewProject(newProject) {
+    newProject.projectId = projectsArr.length + 1;
+    setProjectsArr((prevProjectsArr) => [...prevProjectsArr, newProject]);
+    setMainPartState(-1);
+  }
+  
 
   return (
     <div className="flex h-screen">
@@ -45,31 +67,41 @@ function App() {
         addProjectClick={handleNewProject}
       />
 
-      {mainPartState === "no project" ? (
+      {mainPartState === -1 ? (
         <NoProjectSelected addProjectClick={handleNewProject} />
-      ) : mainPartState === "new project" ? (
+      ) : mainPartState === 0 ? (
         <ProjectPreview
-          projectId={projectsArr.length}
+          projectId={projectsArr.length + 1}
           projectTitle="new project"
           projectDescription="write here project description"
           taskList={["add your tasks below"]}
           date="1234"
           projects={projectsArr}
-          onAddProject={handleAddProject}
+          onSaveProject={handleSaveNewProject}
         />
       ) : (
-        <ProjectPreview
-          projectId={project.projectId}
-          projectTitle={project.projectName}
-          projectDescription={project.description}
-          taskList={project.tasks}
-          date={project.dateUpdated}
-          projects={projectsArr}
-          onAddProject={handleAddProject}
-        />
-      )}
-      {mainPartState !== "no project" && mainPartState !== "new project" && (
-        <p key="no-project-found">No project found</p>
+        projectsArr.map((project) => {
+          if (mainPartState === project.projectId) {
+            return (
+              <ProjectPreview
+                key={project.projectId}
+                projectId={project.projectId}
+                projectTitle={project.projectName}
+                projectDescription={project.description}
+                taskList={project.tasks}
+                date={project.dateUpdated}
+                projects={projectsArr}
+                onSaveProject={handleUpdateExistingProject}
+              />
+            );
+          }
+          {
+            mainPartState !== "no project" &&
+              mainPartState !== "new project" && (
+                <p key="no-project-found">No project found</p>
+              );
+          }
+        })
       )}
     </div>
   );

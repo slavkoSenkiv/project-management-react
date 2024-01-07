@@ -7,9 +7,8 @@ export default function ProjectPreview({
   taskList,
   date,
   projects,
-  onAddProject,
+  onSaveProject
 }) {
-  
   const projectJson = {
     projectId: projectId,
     projectName: projectTitle,
@@ -26,11 +25,6 @@ export default function ProjectPreview({
       prevObj[parameter] = event.target.value;
       return { ...prevObj };
     });
-  }
-
-  function handleSaveProject() {
-    setProjectsList((prevProjectsList) => [...prevProjectsList, projectData]);
-    onAddProject(projectData);
   }
 
   return (
@@ -69,7 +63,8 @@ export default function ProjectPreview({
               defaultValue={task}
               className="flex-1 border-b-2 focus:outline-none focus:border-blue-500"
             />
-            <button className="ml-2 px-3 py-1 bg-blue-500 text-white rounded">Save
+            <button className="ml-2 px-3 py-1 bg-blue-500 text-white rounded">
+              Save
             </button>
           </span>
         ))
@@ -86,7 +81,7 @@ export default function ProjectPreview({
           Add New Task
         </button>
       </span>
-      
+
       {/* date, delete, save project */}
       <span className="flex items-center mt-4">
         <p className="text-gray-500 mb-4">Date: {date}</p>
@@ -96,7 +91,7 @@ export default function ProjectPreview({
         </button>
 
         <button
-          onClick={handleSaveProject}
+          onClick={() => onSaveProject(projectData)}
           className="ml-2 px-3 py-1 bg-blue-500 text-white rounded"
         >
           Save Project
