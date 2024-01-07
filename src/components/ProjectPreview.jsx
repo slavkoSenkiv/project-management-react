@@ -1,19 +1,21 @@
 import { useState } from "react";
 
 export default function ProjectPreview({
+  projectId,
   projectTitle,
-  date,
   projectDescription,
   taskList,
+  date,
   projects,
   onAddProject,
 }) {
   
   const projectJson = {
+    projectId: projectId,
     projectName: projectTitle,
-    dateUpdated: date,
     description: projectDescription,
     tasks: taskList,
+    dateUpdated: date,
   };
 
   const [projectData, setProjectData] = useState(projectJson);
@@ -67,7 +69,7 @@ export default function ProjectPreview({
               defaultValue={task}
               className="flex-1 border-b-2 focus:outline-none focus:border-blue-500"
             />
-            <button className="ml-2 px-3 py-1 bg-red-500 text-white rounded">Save
+            <button className="ml-2 px-3 py-1 bg-blue-500 text-white rounded">Save
             </button>
           </span>
         ))

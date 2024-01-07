@@ -8,7 +8,7 @@ export default function Sidebar({ projects, onProjectClick, addProjectClick }) {
       {projects.length > 0 ? (
         projects.map((project) => (
           <button
-            key={projects.indexOf(project)}
+            key={project.projectId}
             onClick={() => onProjectClick(project)}
             className="block w-full text-left py-2 px-4 mb-2 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
           >
