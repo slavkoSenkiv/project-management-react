@@ -6,18 +6,18 @@ import ProjectPreview from "./components/ProjectPreview";
 function App() {
   const defProjectsCollection = [
     {
-      projectId: 1,
-      projectName: "project 1",
+      id: 1,
+      title: "project 1",
       description: "description for project 1",
       tasks: ["task 1a", "task 1b", "task 1c"],
-      dateUpdated: "1111",
+      date: "1111",
     },
     {
-      projectId: 2,
-      projectName: "project 2",
+      id: 2,
+      title: "project 2",
       description: "description for project 2",
       tasks: ["task 2a", "task 2b", "task 2c"],
-      dateUpdated: "2222",
+      date: "2222",
     },
   ];
 
@@ -25,39 +25,49 @@ function App() {
   const [mainPartState, setMainPartState] = useState(-1);
 
   function handleNewProject() {
-    setMainPartState(1);
+    setMainPartState(0);
   }
 
-  function handleLoadProject(project) {
-    setMainPartState(project.projectId);
+  function handleLoadProject(existingProject) {
+    setMainPartState(existingProject.id);
   }
 
   function handleUpdateExistingProject(existingProject) {
     setProjectsArr((prevProjectsArr) => {
       const index = prevProjectsArr.findIndex(
-        (project) => project.projectId === existingProject.projectId
+        (project) => project.id === existingProject.id
       );
-  
+
       if (index !== -1) {
-        // Update existing project
         prevProjectsArr[index] = existingProject;
       } else {
-        // Handle case where the project is not found
         console.error("Project not found for updating.");
       }
-  
+
       return [...prevProjectsArr];
     });
-  
+
     setMainPartState(-1);
   }
-  
+
   function handleSaveNewProject(newProject) {
-    newProject.projectId = projectsArr.length + 1;
+    newProject.id = projectsArr.length + 1;
     setProjectsArr((prevProjectsArr) => [...prevProjectsArr, newProject]);
     setMainPartState(-1);
   }
-  
+
+  function handleDeleteProject(projectToDelete) {
+    setProjectsArr((prevProjectsArr) => {
+      const index = prevProjectsArr.findIndex(
+        (project) => project.id === projectToDelete.id
+      );
+      if (index !== -1) {
+        prevProjectsArr.splice(index, 1);
+      }
+      return [...prevProjectsArr];
+    });
+    setMainPartState(-1);
+  }
 
   return (
     <div className="flex h-screen">
@@ -71,35 +81,28 @@ function App() {
         <NoProjectSelected addProjectClick={handleNewProject} />
       ) : mainPartState === 0 ? (
         <ProjectPreview
-          projectId={projectsArr.length + 1}
-          projectTitle="new project"
-          projectDescription="write here project description"
-          taskList={["add your tasks below"]}
-          date="1234"
+          id={projectsArr.length + 1}
           projects={projectsArr}
           onSaveProject={handleSaveNewProject}
+          onDeleteClick={handleDeleteProject}
         />
       ) : (
-        projectsArr.map((project) => {
-          if (mainPartState === project.projectId) {
+        projectsArr.map((project, index) => {
+          if (mainPartState === project.id) {
             return (
               <ProjectPreview
-                key={project.projectId}
-                projectId={project.projectId}
-                projectTitle={project.projectName}
-                projectDescription={project.description}
-                taskList={project.tasks}
-                date={project.dateUpdated}
+                key={index}
+                id={project.id}
                 projects={projectsArr}
                 onSaveProject={handleUpdateExistingProject}
+                onDeleteClick={handleDeleteProject}
               />
             );
           }
           {
-            mainPartState !== "no project" &&
-              mainPartState !== "new project" && (
-                <p key="no-project-found">No project found</p>
-              );
+            mainPartState !== -1 && mainPartState !== 0 && (
+              <p key="no-project-found">No project found</p>
+            );
           }
         })
       )}

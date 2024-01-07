@@ -6,13 +6,13 @@ export default function Sidebar({ projects, onProjectClick, addProjectClick }) {
       <h1 className="text-xl font-bold mb-4">Your Projects</h1>
 
       {projects.length > 0 ? (
-        projects.map((project) => (
+        projects.map((project, index) => (
           <button
-            key={project.projectId}
+            key={index}
             onClick={() => onProjectClick(project)}
             className="block w-full text-left py-2 px-4 mb-2 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
           >
-            {project.projectName}
+            {project.title}
           </button>
         ))
       ) : (
