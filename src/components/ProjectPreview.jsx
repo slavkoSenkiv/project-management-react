@@ -45,10 +45,17 @@ export default function ProjectPreview({
     setTasksArr(updatedTasks);
   }
 
-  function handleRemoveSubtask(taskIndex) {
+/*   function handleRemoveSubtask(taskIndex) {
     setTasksArr((prevTasks) => {
       const updatedTasks = [...prevTasks];
       updatedTasks.splice(taskIndex, 1);
+      return updatedTasks;
+    });
+  } */
+
+  function handleRemoveSubtask(taskIndex) {
+    setTasksArr((prevTasks) => {
+      const updatedTasks = prevTasks.filter((_, index) => index !== taskIndex);
       return updatedTasks;
     });
   }

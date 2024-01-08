@@ -32,17 +32,6 @@ function App() {
     setMainPartState(existingProject.id);
   }
 
-/*   function handleUpdateExistingProject(existingProject) {
-    setProjectsArr((prevProjectsArr) => {
-      const index = prevProjectsArr.findIndex(
-        (project) => project.id === existingProject.id
-      );
-      prevProjectsArr[index] = existingProject;
-      return [...prevProjectsArr];
-    });
-    setMainPartState(-1);
-  } */
-
   function handleUpdateExistingProject(updatedProject) {
     setProjectsArr((prevProjectsArr) => {
       return prevProjectsArr.map((project) =>
@@ -51,7 +40,6 @@ function App() {
     });
     setMainPartState(-1);
   }
-  
 
   function handleSaveNewProject(newProject) {
     newProject.id = projectsArr.length + 1;
