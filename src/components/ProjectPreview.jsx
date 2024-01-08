@@ -6,7 +6,6 @@ export default function ProjectPreview({
   onDeleteClick,
   onSaveProject,
 }) {
-  
   let projectJson;
   if (id === projects.length + 1) {
     projectJson = {
@@ -30,7 +29,6 @@ export default function ProjectPreview({
     });
   }
 
-  const [projectsArr, setProjectsArr] = useState(projects);
   const [projectData, setProjectData] = useState(projectJson);
   const [tasksArr, setTasksArr] = useState(projectData.tasks);
 
@@ -45,19 +43,13 @@ export default function ProjectPreview({
     const updatedTasks = [...tasksArr];
     updatedTasks[taskIndex] = event.target.value;
     setTasksArr(updatedTasks);
+  }
 
-    setProjectsArr((prevProjectsArr) => {
-      const arrIndex = prevProjectsArr.findIndex(
-        (project) => project.id === projectData.id
-      );
-
-      if (arrIndex !== -1) {
-        prevProjectsArr[arrIndex] = projectData;
-      } else {
-        console.error("Project not found for updating.");
-      }
-
-      return [...prevProjectsArr];
+  function handleRemoveSubtask(taskIndex) {
+    setTasksArr((prevTasks) => {
+      const updatedTasks = [...prevTasks];
+      updatedTasks.splice(taskIndex, 1);
+      return updatedTasks;
     });
   }
 
@@ -84,7 +76,6 @@ export default function ProjectPreview({
       </p>
 
       <h2 className="text-xl font-bold mt-6 mb-4">Tasks</h2>
-
       {projectData.tasks.length === 0 ? (
         <p className="text-gray-500">
           This project does not have any tasks yet
@@ -98,7 +89,8 @@ export default function ProjectPreview({
               onChange={(event) => onSubtaskChange(event, taskIndex)}
               className="flex-1 border-b-2 focus:outline-none focus:border-blue-500"
             />
-            <button className="ml-2 px-3 py-1 bg-red-500 text-white rounded">
+            <button className="ml-2 px-3 py-1 bg-red-500 text-white rounded" 
+              onClick={()=>handleRemoveSubtask(taskIndex)}>
               X
             </button>
           </span>

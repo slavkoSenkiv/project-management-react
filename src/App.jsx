@@ -32,23 +32,26 @@ function App() {
     setMainPartState(existingProject.id);
   }
 
-  function handleUpdateExistingProject(existingProject) {
+/*   function handleUpdateExistingProject(existingProject) {
     setProjectsArr((prevProjectsArr) => {
       const index = prevProjectsArr.findIndex(
         (project) => project.id === existingProject.id
       );
-
-      if (index !== -1) {
-        prevProjectsArr[index] = existingProject;
-      } else {
-        console.error("Project not found for updating.");
-      }
-
+      prevProjectsArr[index] = existingProject;
       return [...prevProjectsArr];
     });
+    setMainPartState(-1);
+  } */
 
+  function handleUpdateExistingProject(updatedProject) {
+    setProjectsArr((prevProjectsArr) => {
+      return prevProjectsArr.map((project) =>
+        project.id === updatedProject.id ? updatedProject : project
+      );
+    });
     setMainPartState(-1);
   }
+  
 
   function handleSaveNewProject(newProject) {
     newProject.id = projectsArr.length + 1;
