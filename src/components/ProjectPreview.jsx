@@ -6,24 +6,28 @@ export default function ProjectPreview({
   onDeleteClick,
   onSaveProject,
 }) {
+  
   let projectJson;
-
   if (id === projects.length + 1) {
     projectJson = {
       id: id,
       title: "new blank project",
-      description:"write here project description",
+      description: "write here project description",
       tasks: ["add your tasks below"],
       date: "1234",
     };
   } else {
-    projectJson = {
-      id: projects[id].id,
-      title: projects[id].title,
-      description: projects[id].description,
-      tasks: projects[id].tasks,
-      date: projects[id].date,
-    };
+    projects.map((project) => {
+      if (id === project.id) {
+        projectJson = {
+          id: project.id,
+          title: project.title,
+          description: project.description,
+          tasks: project.tasks,
+          date: project.date,
+        };
+      }
+    });
   }
 
   const [projectsArr, setProjectsArr] = useState(projects);
@@ -73,7 +77,7 @@ export default function ProjectPreview({
       <p>
         <input
           type="text"
-          defaultValue={description}
+          defaultValue={projectData.description}
           onChange={(event) => handleInputChange(event, "description")}
           className="border-b-2 focus:outline-none focus:border-blue-500"
         />
@@ -81,12 +85,12 @@ export default function ProjectPreview({
 
       <h2 className="text-xl font-bold mt-6 mb-4">Tasks</h2>
 
-      {tasks.length === 0 ? (
+      {projectData.tasks.length === 0 ? (
         <p className="text-gray-500">
           This project does not have any tasks yet
         </p>
       ) : (
-        tasks.map((task, taskIndex) => (
+        projectData.tasks.map((task, taskIndex) => (
           <span key={taskIndex} className="flex items-center mb-2">
             <input
               type="text"
@@ -114,7 +118,7 @@ export default function ProjectPreview({
 
       {/* date, delete, save project */}
       <span className="flex items-center mt-4">
-        <p className="text-gray-500 mb-4">Date: {date}</p>
+        <p className="text-gray-500 mb-4">Date: {projectData.date}</p>
 
         <button
           onClick={() => onDeleteClick(projectData)}
