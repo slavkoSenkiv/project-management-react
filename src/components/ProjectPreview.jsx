@@ -30,7 +30,6 @@ export default function ProjectPreview({
   }
 
   const [projectData, setProjectData] = useState(projectJson);
-  const [tasksArr, setTasksArr] = useState(projectData.tasks);
 
   function handleInputChange(event, parameter) {
     setProjectData((prevObj) => {
@@ -45,20 +44,13 @@ export default function ProjectPreview({
     setTasksArr(updatedTasks);
   }
 
-/*   function handleRemoveSubtask(taskIndex) {
-    setTasksArr((prevTasks) => {
-      const updatedTasks = [...prevTasks];
-      updatedTasks.splice(taskIndex, 1);
-      return updatedTasks;
-    });
-  } */
-
   function handleRemoveSubtask(taskIndex) {
-    setTasksArr((prevTasks) => {
-      const updatedTasks = prevTasks.filter((_, index) => index !== taskIndex);
-      return updatedTasks;
+    setProjectData((prevProject) => {
+      const updatedProject = { ...prevProject };
+      updatedProject.tasks.splice(taskIndex, 1);
+      return updatedProject;
     });
-  }
+  }  
 
   return (
     <div className="p-4 bg-white shadow-md rounded-md">

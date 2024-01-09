@@ -22,10 +22,10 @@ function App() {
   ];
 
   const [projectsArr, setProjectsArr] = useState(defProjectsCollection);
-  const [mainPartState, setMainPartState] = useState(-1);
+  const [mainPartState, setMainPartState] = useState('no-project-selected');
 
   function handleNewProject() {
-    setMainPartState(0);
+    setMainPartState('blank-project');
   }
 
   function handleLoadProject(existingProject) {
@@ -68,9 +68,9 @@ function App() {
         addProjectClick={handleNewProject}
       />
 
-      {mainPartState === -1 ? (
+      {mainPartState === 'no-project-selected' ? (
         <NoProjectSelected addProjectClick={handleNewProject} />
-      ) : mainPartState === 0 ? (
+      ) : mainPartState === 'blank-project' ? (
         <ProjectPreview
           id={projectsArr.length + 1}
           projects={projectsArr}
