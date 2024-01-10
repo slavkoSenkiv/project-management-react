@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
-import { v4 as uuidv4 } from 'uuid';
-
+import { v4 as uuidv4 } from "uuid";
 
 export default function ProjectPreview({
   id,
@@ -55,28 +54,13 @@ export default function ProjectPreview({
     });
   }
 
-/*   function handleAddSubtask(inputValue) {
+  function handleAddSubtask(inputValue) {
     setProjectData((prevProject) => {
-      const updatedProject = { ...prevProject };
-      updatedProject.tasks.push(inputValue.value);
-      return updatedProject;
+      const deepCopyProject = { ...prevProject };
+      deepCopyProject.tasks = [...prevProject.tasks, inputValue.current.value];
+      return deepCopyProject;
     });
-  } */
-
-  function handleAddSubtask() {
-    const inputValue = newTaskRef.current.value; // Extract the value from the input field
-    if (inputValue.trim() === "") return; // Skip if the input is empty
-  
-    setProjectData((prevProject) => {
-      const updatedProject = { ...prevProject };
-      updatedProject.tasks.push(inputValue);
-      return updatedProject;
-    });
-  
-    // Clear the input field after adding the task
-    newTaskRef.current.value = "";
   }
-  
 
   return (
     <div className="p-4 bg-white shadow-md rounded-md">
@@ -111,7 +95,7 @@ export default function ProjectPreview({
             <input
               type="text"
               defaultValue={task}
-              onChange={(event) => onSubtaskChange(event, taskIndex)}
+              //onChange={(event) => onSubtaskChange(event, taskIndex)}
               className="flex-1 border-b-2 focus:outline-none focus:border-blue-500"
             />
             <button
@@ -133,7 +117,7 @@ export default function ProjectPreview({
         />
         <button
           className="ml-2 px-3 py-1 bg-green-500 text-white rounded"
-          onClick={handleAddSubtask}
+          onClick={() => handleAddSubtask(newTaskRef)}
         >
           Add
         </button>
