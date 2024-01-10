@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
+
 
 export default function ProjectPreview({
   id,
@@ -30,6 +32,7 @@ export default function ProjectPreview({
   }
 
   const [projectData, setProjectData] = useState(projectJson);
+  const newTaskRef = useRef();
 
   function handleInputChange(event, parameter) {
     setProjectData((prevObj) => {
@@ -50,7 +53,30 @@ export default function ProjectPreview({
       updatedProject.tasks.splice(taskIndex, 1);
       return updatedProject;
     });
-  }  
+  }
+
+/*   function handleAddSubtask(inputValue) {
+    setProjectData((prevProject) => {
+      const updatedProject = { ...prevProject };
+      updatedProject.tasks.push(inputValue.value);
+      return updatedProject;
+    });
+  } */
+
+  function handleAddSubtask() {
+    const inputValue = newTaskRef.current.value; // Extract the value from the input field
+    if (inputValue.trim() === "") return; // Skip if the input is empty
+  
+    setProjectData((prevProject) => {
+      const updatedProject = { ...prevProject };
+      updatedProject.tasks.push(inputValue);
+      return updatedProject;
+    });
+  
+    // Clear the input field after adding the task
+    newTaskRef.current.value = "";
+  }
+  
 
   return (
     <div className="p-4 bg-white shadow-md rounded-md">
@@ -81,15 +107,17 @@ export default function ProjectPreview({
         </p>
       ) : (
         projectData.tasks.map((task, taskIndex) => (
-          <span key={taskIndex} className="flex items-center mb-2">
+          <span key={uuidv4()} className="flex items-center mb-2">
             <input
               type="text"
               defaultValue={task}
               onChange={(event) => onSubtaskChange(event, taskIndex)}
               className="flex-1 border-b-2 focus:outline-none focus:border-blue-500"
             />
-            <button className="ml-2 px-3 py-1 bg-red-500 text-white rounded" 
-              onClick={()=>handleRemoveSubtask(taskIndex)}>
+            <button
+              className="ml-2 px-3 py-1 bg-red-500 text-white rounded"
+              onClick={() => handleRemoveSubtask(taskIndex)}
+            >
               X
             </button>
           </span>
@@ -100,9 +128,13 @@ export default function ProjectPreview({
       <span className="flex items-center mt-4">
         <input
           type="text"
+          ref={newTaskRef}
           className="flex-1 border-b-2 focus:outline-none focus:border-blue-500"
         />
-        <button className="ml-2 px-3 py-1 bg-green-500 text-white rounded">
+        <button
+          className="ml-2 px-3 py-1 bg-green-500 text-white rounded"
+          onClick={handleAddSubtask}
+        >
           Add
         </button>
       </span>

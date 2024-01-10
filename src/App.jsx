@@ -38,13 +38,13 @@ function App() {
         project.id === updatedProject.id ? updatedProject : project
       );
     });
-    setMainPartState(-1);
+    setMainPartState('no-project-selected');
   }
 
   function handleSaveNewProject(newProject) {
     newProject.id = projectsArr.length + 1;
     setProjectsArr((prevProjectsArr) => [...prevProjectsArr, newProject]);
-    setMainPartState(-1);
+    setMainPartState('no-project-selected');
   }
 
   function handleDeleteProject(projectToDelete) {
