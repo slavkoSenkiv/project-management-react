@@ -10,22 +10,45 @@ function App() {
       title: "project 1",
       description: "description for project 1",
       tasks: ["task 1a", "task 1b", "task 1c"],
-      date: "1111",
+      date: getFormattedDateTime(),
     },
     {
       id: 2,
       title: "project 2",
       description: "description for project 2",
       tasks: ["task 2a", "task 2b", "task 2c"],
-      date: "2222",
+      date: getFormattedDateTime(),
     },
   ];
 
   const [projectsArr, setProjectsArr] = useState(defProjectsCollection);
-  const [mainPartState, setMainPartState] = useState(1);
+  const [mainPartState, setMainPartState] = useState("no-project-selected");
+
+  function getFormattedDateTime() {
+    const now = new Date();
+
+    // Get date components
+    const day = now.getDate();
+    const month = now.getMonth() + 1; // Months are zero-based
+    const year = now.getFullYear() % 100; // Get last two digits of the year
+
+    // Get time components
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+
+    // Add leading zero if needed
+    const pad = (value) => (value < 10 ? `0${value}` : value);
+
+    // Format the date-time string
+    const dateString = `${pad(day)}-${pad(month)}-${pad(year)}`;
+    const timeString = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+
+    return `${dateString} ${timeString}`;
+  }
 
   function handleNewProject() {
-    setMainPartState('blank-project');
+    setMainPartState("blank-project");
   }
 
   function handleLoadProject(existingProject) {
@@ -33,18 +56,20 @@ function App() {
   }
 
   function handleUpdateExistingProject(updatedProject) {
+    updatedProject.date = getFormattedDateTime();
     setProjectsArr((prevProjectsArr) => {
       return prevProjectsArr.map((project) =>
         project.id === updatedProject.id ? updatedProject : project
       );
     });
-    setMainPartState('no-project-selected');
+    setMainPartState("no-project-selected");
   }
 
   function handleSaveNewProject(newProject) {
+    newProject.date = getFormattedDateTime()
     newProject.id = projectsArr.length + 1;
     setProjectsArr((prevProjectsArr) => [...prevProjectsArr, newProject]);
-    setMainPartState('no-project-selected');
+    setMainPartState("no-project-selected");
   }
 
   function handleDeleteProject(projectToDelete) {
@@ -68,9 +93,9 @@ function App() {
         addProjectClick={handleNewProject}
       />
 
-      {mainPartState === 'no-project-selected' ? (
+      {mainPartState === "no-project-selected" ? (
         <NoProjectSelected addProjectClick={handleNewProject} />
-      ) : mainPartState === 'blank-project' ? (
+      ) : mainPartState === "blank-project" ? (
         <ProjectPreview
           id={projectsArr.length + 1}
           projects={projectsArr}

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 
 export default function ProjectPreview({
   id,
@@ -34,9 +33,9 @@ export default function ProjectPreview({
   const [newTaskInput, setNewTaskInput] = useState("");
 
   function handleInputChange(event, parameter) {
-    setProjectData((prevObj) => {
-      prevObj[parameter] = event.target.value;
-      return { ...prevObj };
+    setProjectData((prevProject) => {
+      prevProject[parameter] = event.target.value;
+      return { ...prevProject };
     });
   }
 
@@ -54,10 +53,11 @@ export default function ProjectPreview({
       deepCopyProject.tasks = [...prevProject.tasks, newTaskInput];
       return deepCopyProject;
     });
-    setNewTaskInput("")
+    setNewTaskInput("");
   }
 
   function onSubtaskChange(event, taskIndex) {
+
     setProjectData((prevProject) => {
       const deepCopyProject = { ...prevProject };
       deepCopyProject.tasks = [...prevProject.tasks];
@@ -95,13 +95,15 @@ export default function ProjectPreview({
         </p>
       ) : (
         projectData.tasks.map((task, taskIndex) => (
-          <span key={uuidv4()} className="flex items-center mb-2">
+          <span  className="flex items-center mb-2" key={taskIndex}>
+          
             <input
               type="text"
-              defaultValue={task}
+              value={task}
               onChange={(event) => onSubtaskChange(event, taskIndex)}
               className="flex-1 border-b-2 focus:outline-none focus:border-blue-500"
             />
+
             <button
               className="ml-2 px-3 py-1 bg-red-500 text-white rounded"
               onClick={() => handleRemoveSubtask(taskIndex)}
