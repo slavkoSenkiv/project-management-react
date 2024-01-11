@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 export default function ProjectPreview({
@@ -31,19 +31,13 @@ export default function ProjectPreview({
   }
 
   const [projectData, setProjectData] = useState(projectJson);
-  const newTaskRef = useRef();
+  const [newTaskInput, setNewTaskInput] = useState("");
 
   function handleInputChange(event, parameter) {
     setProjectData((prevObj) => {
       prevObj[parameter] = event.target.value;
       return { ...prevObj };
     });
-  }
-
-  function onSubtaskChange(event, taskIndex) {
-    const updatedTasks = [...tasksArr];
-    updatedTasks[taskIndex] = event.target.value;
-    setTasksArr(updatedTasks);
   }
 
   function handleRemoveSubtask(taskIndex) {
@@ -54,10 +48,20 @@ export default function ProjectPreview({
     });
   }
 
-  function handleAddSubtask(inputValue) {
+  function handleAddSubtask() {
     setProjectData((prevProject) => {
       const deepCopyProject = { ...prevProject };
-      deepCopyProject.tasks = [...prevProject.tasks, inputValue.current.value];
+      deepCopyProject.tasks = [...prevProject.tasks, newTaskInput];
+      return deepCopyProject;
+    });
+    setNewTaskInput("")
+  }
+
+  function onSubtaskChange(event, taskIndex) {
+    setProjectData((prevProject) => {
+      const deepCopyProject = { ...prevProject };
+      deepCopyProject.tasks = [...prevProject.tasks];
+      deepCopyProject.tasks[taskIndex] = event.target.value;
       return deepCopyProject;
     });
   }
@@ -95,7 +99,7 @@ export default function ProjectPreview({
             <input
               type="text"
               defaultValue={task}
-              //onChange={(event) => onSubtaskChange(event, taskIndex)}
+              onChange={(event) => onSubtaskChange(event, taskIndex)}
               className="flex-1 border-b-2 focus:outline-none focus:border-blue-500"
             />
             <button
@@ -112,12 +116,13 @@ export default function ProjectPreview({
       <span className="flex items-center mt-4">
         <input
           type="text"
-          ref={newTaskRef}
+          value={newTaskInput}
+          onChange={(event) => setNewTaskInput(event.target.value)}
           className="flex-1 border-b-2 focus:outline-none focus:border-blue-500"
         />
         <button
           className="ml-2 px-3 py-1 bg-green-500 text-white rounded"
-          onClick={() => handleAddSubtask(newTaskRef)}
+          onClick={() => handleAddSubtask()}
         >
           Add
         </button>

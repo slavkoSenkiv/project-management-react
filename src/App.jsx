@@ -22,7 +22,7 @@ function App() {
   ];
 
   const [projectsArr, setProjectsArr] = useState(defProjectsCollection);
-  const [mainPartState, setMainPartState] = useState('no-project-selected');
+  const [mainPartState, setMainPartState] = useState(1);
 
   function handleNewProject() {
     setMainPartState('blank-project');
