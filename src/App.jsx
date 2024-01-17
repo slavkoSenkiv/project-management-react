@@ -1,129 +1,133 @@
 import { useState } from "react";
+import NewProject from "./components/NewProject";
 import NoProjectSelected from "./components/NoProjectSelected";
-import Sidebar from "./components/Sidebar";
-import ProjectPreview from "./components/ProjectPreview";
+import ProjectsSidebar from "./components/ProjectsSidebar";
+import SelectedProject from "./components/SelectedProject";
 
-function App() {
-  const defProjectsCollection = [
-    {
-      id: 1,
-      title: "project 1",
-      description: "description for project 1",
-      tasks: ["task 1a", "task 1b", "task 1c"],
-      date: getFormattedDateTime(),
-    },
-    {
-      id: 2,
-      title: "project 2",
-      description: "description for project 2",
-      tasks: ["task 2a", "task 2b", "task 2c"],
-      date: getFormattedDateTime(),
-    },
-  ];
+export default function App() {
+  const [projectsState, setProjectsState] = useState({
+    selectedProjectId: undefined,
+    projects: [
+      {
+        id: 1,
+        title: "test title",
+        description: "test description",
+        duedate: null,
+      },
+    ],
+    tasks: [],
+  });
 
-  const [projectsArr, setProjectsArr] = useState(defProjectsCollection);
-  const [mainPartState, setMainPartState] = useState("no-project-selected");
+  function handleAddTask(text) {
+    setProjectsState((prevState) => {
+      const newTask = {
+        text: text,
+        projectId: prevState.selectedProjectId,
+        id: Math.random(),
+      };
 
-  function getFormattedDateTime() {
-    const now = new Date();
-
-    // Get date components
-    const day = now.getDate();
-    const month = now.getMonth() + 1; // Months are zero-based
-    const year = now.getFullYear() % 100; // Get last two digits of the year
-
-    // Get time components
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const seconds = now.getSeconds();
-
-    // Add leading zero if needed
-    const pad = (value) => (value < 10 ? `0${value}` : value);
-
-    // Format the date-time string
-    const dateString = `${pad(day)}-${pad(month)}-${pad(year)}`;
-    const timeString = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-
-    return `${dateString} ${timeString}`;
-  }
-
-  function handleNewProject() {
-    setMainPartState("blank-project");
-  }
-
-  function handleLoadProject(existingProject) {
-    setMainPartState(existingProject.id);
-  }
-
-  function handleUpdateExistingProject(updatedProject) {
-    updatedProject.date = getFormattedDateTime();
-    setProjectsArr((prevProjectsArr) => {
-      return prevProjectsArr.map((project) =>
-        project.id === updatedProject.id ? updatedProject : project
-      );
+      return {
+        ...prevState,
+        tasks: [newTask, ...prevState.tasks],
+      };
     });
-    setMainPartState("no-project-selected");
   }
 
-  function handleSaveNewProject(newProject) {
-    newProject.date = getFormattedDateTime()
-    newProject.id = projectsArr.length + 1;
-    setProjectsArr((prevProjectsArr) => [...prevProjectsArr, newProject]);
-    setMainPartState("no-project-selected");
-  }
-
-  function handleDeleteProject(projectToDelete) {
-    setProjectsArr((prevProjectsArr) => {
-      const index = prevProjectsArr.findIndex(
-        (project) => project.id === projectToDelete.id
-      );
-      if (index !== -1) {
-        prevProjectsArr.splice(index, 1);
-      }
-      return [...prevProjectsArr];
+  function handleDeleteTask(id) {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        tasks: prevState.tasks.filter((tasks) => tasks.id !== id),
+      };
     });
-    setMainPartState(-1);
+  }
+
+  function handleStartAddProject() {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        selectedProjectId: null,
+      };
+    });
+  }
+
+  function handleAddProject(projectData) {
+    setProjectsState((prevState) => {
+      const newProject = {
+        ...projectData,
+        id: Math.random(),
+      };
+
+      return {
+        ...prevState,
+        selectedProjectId: undefined,
+        projects: [...prevState.projects, newProject],
+      };
+    });
+  }
+
+  function handleCancelAddProject() {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        selectedProjectId: undefined,
+      };
+    });
+  }
+
+  function handleSelectProject(id) {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        selectedProjectId: id,
+      };
+    });
+  }
+
+  function handleDeleteProject() {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        selectedProjectId: undefined,
+        projects: prevState.projects.filter(
+          (project) => project.id !== prevState.selectedProjectId
+        ),
+      };
+    });
+  }
+
+  const selectedProject = projectsState.projects.find(
+    (project) => project.id === projectsState.selectedProjectId
+  );
+
+  let content = (
+    <SelectedProject
+      project={selectedProject}
+      onDelete={handleDeleteProject}
+      onAddTask={handleAddTask}
+      onDeleteTask={handleDeleteTask}
+      tasks={projectsState.tasks.filter(
+        ({ projectId }) => projectId === projectsState.selectedProjectId
+      )}
+    />
+  );
+  if (projectsState.selectedProjectId === null) {
+    content = (
+      <NewProject onAdd={handleAddProject} onCancel={handleCancelAddProject} />
+    );
+  } else if (projectsState.selectedProjectId === undefined) {
+    content = <NoProjectSelected onStartAddProject={handleStartAddProject} />;
   }
 
   return (
-    <div className="flex h-screen">
-      <Sidebar
-        projects={projectsArr}
-        onProjectClick={handleLoadProject}
-        addProjectClick={handleNewProject}
+    <main className="h-screen mt-8 flex gap-8">
+      <ProjectsSidebar
+        onStartAddProject={handleStartAddProject}
+        projects={projectsState.projects}
+        onSelectProject={handleSelectProject}
+        selectedProjectId={projectsState.selectedProjectId}
       />
-
-      {mainPartState === "no-project-selected" ? (
-        <NoProjectSelected addProjectClick={handleNewProject} />
-      ) : mainPartState === "blank-project" ? (
-        <ProjectPreview
-          id={projectsArr.length + 1}
-          projects={projectsArr}
-          onSaveProject={handleSaveNewProject}
-          onDeleteClick={handleDeleteProject}
-        />
-      ) : (
-        projectsArr.map((project, index) => {
-          if (mainPartState === project.id) {
-            return (
-              <ProjectPreview
-                key={index}
-                id={project.id}
-                projects={projectsArr}
-                onSaveProject={handleUpdateExistingProject}
-                onDeleteClick={handleDeleteProject}
-              />
-            );
-          }
-          {
-            mainPartState !== -1 && mainPartState !== 0 && (
-              <p key="no-project-found">No project found</p>
-            );
-          }
-        })
-      )}
-    </div>
+      {content}
+    </main>
   );
 }
-
-export default App;

@@ -1,13 +1,23 @@
-import AddProjectButton from "./AddProjectButton";
-import tabImage from "../assets/no-projects.png";
+import noProjectImage from "../assets/no-projects.png";
+import Button from "./Button";
 
-export default function NoProjectSelected( {addProjectClick}) {
+export default function NoProjectSelected({ onStartAddProject }) {
   return (
-    <div className="flex-1 flex-col p-10 items-center justify-center h-screen">
-      <img src={tabImage} alt="Project Image" className="mb-4 w-20 h-20" />
-      <h1 className="text-2xl font-bold mb-2">No Projects Selected</h1>
-      <p className="text-gray-600 mb-4">Select a project or get started with a new one</p>
-      <AddProjectButton addProject={addProjectClick}/>
+    <div className="mt-24 text-center w-2/3">
+      <img
+        src={noProjectImage}
+        alt="an empty task list"
+        className="w-16 h-16 object-contain mx-auto"
+      />
+      <h2 className="text-xl font-bold text-stone-500 my-4">
+        No Project Selected
+      </h2>
+      <p className="text-stone-400 mb-4">
+        Select a project or get started with a new one
+      </p>
+      <p className="mt-8">
+        <Button onClick={onStartAddProject}>Create a new project</Button>
+      </p>
     </div>
   );
 }
