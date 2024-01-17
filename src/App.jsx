@@ -23,17 +23,24 @@ export default function App() {
       const newTask = {
         text: text,
         projectId: prevState.selectedProjectId,
-        taskId: Math.random(),
+        id: Math.random(),
       };
 
       return {
         ...prevState,
-        tasks: [...prevState.tasks, newTask],
+        tasks: [newTask, ...prevState.tasks],
       };
     });
   }
 
-  function handleDeleteTask() {}
+  function handleDeleteTask(id) {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        tasks: prevState.tasks.filter((tasks) => tasks.id !== id),
+      };
+    });
+  }
 
   function handleStartAddProject() {
     setProjectsState((prevState) => {
@@ -99,7 +106,9 @@ export default function App() {
       onDelete={handleDeleteProject}
       onAddTask={handleAddTask}
       onDeleteTask={handleDeleteTask}
-      tasks={projectsState.tasks}
+      tasks={projectsState.tasks.filter(
+        ({ projectId }) => projectId === projectsState.selectedProjectId
+      )}
     />
   );
   if (projectsState.selectedProjectId === null) {
